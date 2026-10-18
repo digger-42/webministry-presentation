@@ -38,4 +38,4 @@ The brand typeface is Avant Garde. The template uses **TeX Gyre Adventor**, its 
 | PCC-Content-Burgundy | Part 3: services |
 | PCC-Content-DarkGreen | Part 4: the website |
 
-The logo PNGs were cut from the brand guide PDF. Swap in the official files from Ken Stewart when available, keeping the same filenames, and rerun the build.
+The logo PNGs are the official horizontal files from Ken Stewart's logo source (color, reverse with green, reverse all white). The tree watermark is traced from the brand guide's cover. To change an image, replace the file under `assets/brand/` with the same name and rerun the build.
