@@ -1,0 +1,14 @@
+# LibreOffice lock files
+.~lock.*#
+
+# OS junk
+.DS_Store
+._*
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
