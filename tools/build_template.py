@@ -4,16 +4,19 @@
 Writes a flat ODF presentation (.fodp) with the brand master slides, then
 LibreOffice converts it to:
   templates/PCC-WebMinistry.otp   the reusable template (title slide only)
-  deck/WebMinistry-Training.odp   the starter deck (title + sample slides)
+  deck/WebMinistry-Training.odp   the training deck (slides from tools/deck_content.py)
 
 Brand rules come from PCC Graphic Standards 2020. Run from the repo root:
   python3 tools/build_template.py
 """
 import base64
+from html import escape
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+from deck_content import DECK  # slide text lives in tools/deck_content.py
 
 ROOT = Path(__file__).resolve().parent.parent
 BRAND = ROOT / "assets" / "brand"
@@ -233,14 +236,14 @@ def build_fodp(slides):
         body.append(
             f'<draw:frame presentation:style-name="{m}-title" draw:layer="layout" svg:x="{x}cm" svg:y="{y}cm" '
             f'svg:width="{w}cm" svg:height="{h}cm" presentation:class="title" presentation:user-transformed="true">'
-            f'<draw:text-box><text:p>{s["title"]}</text:p></draw:text-box></draw:frame>'
+            f'<draw:text-box><text:p>{escape(s["title"], quote=False)}</text:p></draw:text-box></draw:frame>'
         )
         if "subtitle" in s:
             x, y, w, h = geo["subtitle"]
             body.append(
                 f'<draw:frame presentation:style-name="{m}-subtitle" draw:layer="layout" svg:x="{x}cm" '
                 f'svg:y="{y}cm" svg:width="{w}cm" svg:height="{h}cm" presentation:class="subtitle" '
-                f'presentation:user-transformed="true"><draw:text-box><text:p>{s["subtitle"]}</text:p>'
+                f'presentation:user-transformed="true"><draw:text-box><text:p>{escape(s["subtitle"], quote=False)}</text:p>'
                 '</draw:text-box></draw:frame>'
             )
         if "bullets" in s:
@@ -248,15 +251,25 @@ def build_fodp(slides):
             items = ""
             for b in s["bullets"]:
                 if isinstance(b, tuple):  # (text, [sub-bullets])
-                    subs = "".join(f"<text:list-item><text:p>{t}</text:p></text:list-item>" for t in b[1])
-                    items += f"<text:list-item><text:p>{b[0]}</text:p><text:list>{subs}</text:list></text:list-item>"
+                    subs = "".join(f"<text:list-item><text:p>{escape(t, quote=False)}</text:p></text:list-item>" for t in b[1])
+                    items += (f"<text:list-item><text:p>{escape(b[0], quote=False)}</text:p>"
+                              f"<text:list>{subs}</text:list></text:list-item>")
                 else:
-                    items += f"<text:list-item><text:p>{b}</text:p></text:list-item>"
+                    items += f"<text:list-item><text:p>{escape(b, quote=False)}</text:p></text:list-item>"
             body.append(
                 f'<draw:frame presentation:style-name="{m}-outline1" draw:layer="layout" svg:x="{x}cm" '
                 f'svg:y="{y}cm" svg:width="{w}cm" svg:height="{h}cm" presentation:class="outline" '
                 f'presentation:user-transformed="true"><draw:text-box><text:list text:style-name="LBullets">{items}</text:list>'
                 '</draw:text-box></draw:frame>'
+            )
+        if "notes" in s:
+            paras = "".join(f"<text:p>{escape(n, quote=False)}</text:p>" for n in s["notes"])
+            body.append(
+                '<presentation:notes><draw:page-thumbnail draw:layer="layout" svg:x="2cm" svg:y="1.5cm" '
+                'svg:width="17cm" svg:height="9.6cm" presentation:class="page"/>'
+                f'<draw:frame presentation:style-name="{m}-notes" draw:layer="layout" svg:x="2cm" svg:y="12cm" '
+                'svg:width="17cm" svg:height="14cm" presentation:class="notes" presentation:user-transformed="true">'
+                f'<draw:text-box>{paras}</draw:text-box></draw:frame></presentation:notes>'
             )
         body.append("</draw:page>")
         pages.append("".join(body))
@@ -297,31 +310,6 @@ def build_fodp(slides):
     )
 
 
-TITLE_SLIDE = {"master": "PCC-Title", "title": "PCC WebMinistry Training", "subtitle": "11/21/2026"}
-
-DECK = [
-    TITLE_SLIDE,
-    {"master": "PCC-Content", "title": "Today", "bullets": [
-        "10:00  How we're organized: people and responsibilities",
-        "10:15  The building: network, phones, video streaming",
-        "10:35  Services: Google Workspace, Breeze, Planning Center",
-        "11:00  The website: Flex, menus, content, page types",
-        "11:45  Hands-on: edit a page",
-        "Lunch, then your turn: questions and ideas for the website",
-    ]},
-    {"master": "PCC-Section", "title": "How we're organized", "subtitle": "People and responsibilities"},
-    {"master": "PCC-Content-Gold", "title": "Sample: a content slide in a part's color", "bullets": [
-        ("Each part of the day has its own content master", [
-            "Gold: people",
-            "Teal: the building",
-            "Burgundy: services",
-            "Dark Green: the website",
-        ]),
-        "Green (PCC-Content) is the default for everything else",
-    ]},
-]
-
-
 def convert(fodp, fmt, out_dir):
     subprocess.run(
         ["soffice", "--headless", "--convert-to", fmt, "--outdir", str(out_dir), str(fodp)],
@@ -333,7 +321,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         for stem, slides, fmt, dest in [
-            ("PCC-WebMinistry", [TITLE_SLIDE], "otp", ROOT / "templates"),
+            ("PCC-WebMinistry", [DECK[0]], "otp", ROOT / "templates"),
             ("WebMinistry-Training", DECK, "odp", ROOT / "deck"),
         ]:
             fodp = tmp / f"{stem}.fodp"
