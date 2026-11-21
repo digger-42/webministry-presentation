@@ -103,12 +103,12 @@ DECK = [
         "Who: Dan Raymond; Gary Campbell and Patti Krieger are also admins",
     ]},
 
-    {"master": TEAL, "title": "Live-stream video", "icon": "video", "bullets": [
-        "3 PTZ cameras above the sound booth",
+    {"master": TEAL, "title": "Live-stream video", "bullets": [
+        "3 PTZ cameras above the sound booth; Camera 3, in the center, also feeds the hallway TV outside the sanctuary directly",
         "They feed the \"PCC Video Beast\", a graphics powerhouse of a PC, much like a gaming computer",
-        "vMix mixes in the sound board feed",
+        "vMix blends the camera feeds with the sound-board feed into one coherent video stream",
         "Streams to Facebook, YouTube and the Watch Live page on pccmi.org",
-        "Who: Dan Rittersdorf built and maintains it; Katie Winstanley holds the budget",
+        "Who: Dan Rittersdorf (the system) and Katie Winstanley (the budget)",
     ], "notes": [
         "The Video Beast lives in the video production room, in the northeast corner of the sanctuary.",
     ]},
