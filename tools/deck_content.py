@@ -355,5 +355,6 @@ DECK = [
         "if that's what we decide we want.",
     ]},
 
-    {"master": "PCC-Section", "title": "Thank you"},
+    {"master": "PCC-Section", "title": "Thank you",
+     "subtitle": "“God doesn’t call the equipped; He equips the called.” Roll out!"},
 ]
