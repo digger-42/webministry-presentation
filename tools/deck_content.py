@@ -245,6 +245,11 @@ DECK = [
         "Security cameras: the Security/Safety team",
     ]},
 
+    {"master": GREEN, "title": "Lunch", "icon": "pizza", "paragraphs": [
+        "Pizza time. Pizza fuels tech work. It's a rule.",
+        "After lunch it's your turn: questions and ideas for the website.",
+    ]},
+
     section("Your turn", "Questions and ideas for the website"),
 
     {"master": GREEN, "title": "Who is our audience?", "icon": "user-round-search", "bullets": [
