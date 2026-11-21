@@ -37,6 +37,10 @@ DECK = [
     ]},
 
     {"master": GREEN, "title": "Why we're here", "bullets": [
+        "Everything we do is to serve Christ and bring Him glory",
+        ("Together, we build a website that serves our church family", [
+            "And helps bring seekers to Christ, leading them to our doors with warm, inviting content",
+        ]),
         "Know who looks after which system, and who to ask",
         "See how the building, our services and the website fit together",
         "Watch how the website is edited, so it feels less mysterious",
@@ -59,7 +63,7 @@ DECK = [
         ("Staff and ministry leaders provide the content", [
             "Words, photos, events, schedules, updates for your area",
         ]),
-        "The Dans don't write content",
+        "Together: the Dans provide the framework; your content makes it an appealing, effective ministry tool",
     ], "notes": [
         "Core message of the day: structure versus content.",
     ]},
@@ -267,5 +271,5 @@ DECK = [
         "Publish: turn it on in the menu",
     ]},
 
-    {"master": "PCC-Section", "title": "Thank you", "subtitle": "FIRMLY ROOTED AND NOW BEING BUILT UP"},
+    {"master": "PCC-Section", "title": "Thank you"},
 ]
