@@ -279,6 +279,16 @@ DECK = [
         "Who would edit week to week, and how much training would they need?",
     ]},
 
+    {"master": WEB, "title": "Resources", "bullets": [
+        ("YouTube: lots of Flex 2 training videos and examples", [
+            "https://www.youtube.com/@faithconnector",
+        ]),
+        ("Design catalog", ["https://www.faithconnector.com/our-church-website-designs"]),
+        ("Real church websites built on Faith Connector", ["https://www.faithconnector.com/best-church-websites"]),
+        ("Feature list", ["https://www.faithconnector.com/church-websites-features"]),
+        "Stock graphics: in Flex's image selector pop-up",
+    ]},
+
     {"master": WEB, "title": "Let's build one: a new front page", "icon": "rocket", "paragraphs": [
         "We want to refresh the website's design, and Flex 2 makes that easy.",
         "Let's build a new main page, live, that serves the purposes we just talked about.",

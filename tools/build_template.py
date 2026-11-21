@@ -10,6 +10,7 @@ Brand rules come from PCC Graphic Standards 2020. Run from the repo root:
   python3 tools/build_template.py
 """
 import base64
+import re
 from html import escape
 import subprocess
 import sys
@@ -157,6 +158,12 @@ def presentation_styles(master, title, outline, subtitle, bg="#FFFFFF"):
 MASTER_COLOR = {"PCC-Content": GREEN, **{f"PCC-Content-{k.replace(' ', '')}": v for k, v in PARTS.items()}}
 
 
+def rich(text):
+    """Escape slide text and make any https:// link clickable."""
+    out = escape(text, quote=False)
+    return re.sub(r'(https://[^\s<]+)', r'<text:a xlink:type="simple" xlink:href="\1">\1</text:a>', out)
+
+
 def text_height(text, width_cm):
     """Rough height of a 20pt body paragraph, including its bottom margin."""
     per_line = int(width_cm / 0.43)
@@ -284,7 +291,7 @@ def build_fodp(slides):
             geo["outline"] = (x, y, 19.4, h)
         if s.get("paragraphs"):
             x, y, w, h = geo["outline"]
-            paras = "".join(f'<text:p text:style-name="pBody">{escape(t, quote=False)}</text:p>'
+            paras = "".join(f'<text:p text:style-name="pBody">{rich(t)}</text:p>'
                             for t in s["paragraphs"])
             used = sum(text_height(t, w) for t in s["paragraphs"])
             body.append(
@@ -298,11 +305,11 @@ def build_fodp(slides):
             items = ""
             for b in s["bullets"]:
                 if isinstance(b, tuple):  # (text, [sub-bullets])
-                    subs = "".join(f"<text:list-item><text:p>{escape(t, quote=False)}</text:p></text:list-item>" for t in b[1])
-                    items += (f"<text:list-item><text:p>{escape(b[0], quote=False)}</text:p>"
+                    subs = "".join(f"<text:list-item><text:p>{rich(t)}</text:p></text:list-item>" for t in b[1])
+                    items += (f"<text:list-item><text:p>{rich(b[0])}</text:p>"
                               f"<text:list>{subs}</text:list></text:list-item>")
                 else:
-                    items += f"<text:list-item><text:p>{escape(b, quote=False)}</text:p></text:list-item>"
+                    items += f"<text:list-item><text:p>{rich(b)}</text:p></text:list-item>"
             body.append(
                 f'<draw:frame presentation:style-name="{m}-outline1" draw:layer="layout" svg:x="{x}cm" '
                 f'svg:y="{y}cm" svg:width="{w}cm" svg:height="{h}cm" presentation:class="outline" '
