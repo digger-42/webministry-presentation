@@ -83,7 +83,8 @@ def bullet_levels():
     """Green round bullets, en dashes on the second level."""
     return "".join(
         f'<text:list-level-style-bullet text:level="{lvl}" text:bullet-char="{"●" if lvl % 2 else "–"}">'
-        f'<style:list-level-properties text:space-before="{(lvl - 1) * 1.2:.1f}cm" text:min-label-width="0.8cm"/>'
+        f'<style:list-level-properties text:space-before="{(lvl - 1) * 1.2:.1f}cm" text:min-label-width="1.1cm" '
+        f'text:min-label-distance="0.4cm"/>'
         f'<style:text-properties fo:font-family="OpenSymbol" style:use-window-font-color="false" '
         f'fo:color="{GREEN}" fo:font-size="{60 if lvl == 1 else 80}%"/></text:list-level-style-bullet>'
         for lvl in range(1, 10)
