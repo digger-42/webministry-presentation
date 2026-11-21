@@ -143,11 +143,21 @@ DECK = [
         ]),
     ]},
 
-    {"master": BURGUNDY, "title": "Breeze", "icon": "hand-heart", "bullets": [
-        "Address book and member directory",
-        "Giving: records donations, produces annual tax statements, supports financial reports",
-        "Mass email",
+    {"master": BURGUNDY, "title": "Breeze: our people", "bullets": [
+        ("People database: address book and member directory", [
+            "It needs updating: when people leave PCC, their entries aren't always changed",
+            "Hard to track, because sometimes they come back",
+        ]),
+        "Calendar: several ministries use it for scheduling and reminders",
+        "Forms for our event sign-up lists, and mass email",
         "Who: Greg Fales administers it; staff and the Financial Secretary contribute",
+    ]},
+
+    {"master": BURGUNDY, "title": "Breeze: giving", "icon": "hand-heart", "paragraphs": [
+        "Breeze is where all our online giving support lives.",
+        "Automatic donations and electronic gifts to PCC are easy to set up, on a regular "
+        "schedule or as a one-time gift.",
+        "Breeze records donations, produces annual tax statements and supports our financial reports.",
     ], "notes": [
         "The Financial Secretary counts the offering weekly and reports giving; that role is separate from Gary's Treasurer role.",
     ]},
