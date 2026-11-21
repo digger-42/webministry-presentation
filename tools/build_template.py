@@ -90,7 +90,7 @@ def bullet_levels():
     )
 
 
-def presentation_styles(master, title, outline, subtitle):
+def presentation_styles(master, title, outline, subtitle, bg="#FFFFFF"):
     """Presentation-family styles a master needs. Each arg is (size_pt, color, bold)."""
     def tp(size, color, bold):
         weight = "bold" if bold else "normal"
@@ -110,8 +110,10 @@ def presentation_styles(master, title, outline, subtitle):
         'draw:auto-grow-height="false" fo:padding="0cm"/>'
         '<style:paragraph-properties fo:text-align="start"/>'
         f'{tp(*subtitle)}</style:style>',
+        # Impress reads a master's background fill from this style, not from the
+        # master's drawing-page style, so the color must be set here.
         f'<style:style style:name="{master}-background" style:family="presentation">'
-        '<style:graphic-properties draw:stroke="none" draw:fill="none"/></style:style>',
+        f'<style:graphic-properties draw:stroke="none" draw:fill="solid" draw:fill-color="{bg}"/></style:style>',
         f'<style:style style:name="{master}-backgroundobjects" style:family="presentation">'
         '<style:graphic-properties draw:shadow="hidden"/></style:style>',
         f'<style:style style:name="{master}-notes" style:family="presentation">'
@@ -195,7 +197,8 @@ def build_fodp(slides):
 
     # Section divider: dark background, reversed logo (Option A), green tagline
     m = "PCC-Section"
-    styles.append(presentation_styles(m, (40, "#FFFFFF", True), (20, "#FFFFFF", False), (20, GREEN, False)))
+    styles.append(presentation_styles(m, (40, "#FFFFFF", True), (20, "#FFFFFF", False), (20, GREEN, False),
+                                       bg=BLACK))
     masters.append(
         f'<style:master-page style:name="{m}" style:page-layout-name="PM1" draw:style-name="dpDark">'
         + rect("Accent bar", 2.0, 4.6, 0.4, 3.6, "grAccentGreen")
