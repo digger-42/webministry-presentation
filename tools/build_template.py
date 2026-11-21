@@ -142,7 +142,6 @@ def presentation_styles(master, title, outline, subtitle, bg="#FFFFFF"):
 
 def build_fodp(slides):
     logo = img("pcc-logo-horizontal-color.png")
-    logo_rev = img("pcc-logo-horizontal-reversed-a.png")
     tree = img("pcc-tree-watermark.png")
 
     styles, auto, masters = [], [], []
@@ -154,8 +153,6 @@ def build_fodp(slides):
         f'fo:page-height="{H}cm" style:print-orientation="landscape"/></style:page-layout>'
         '<style:style style:name="dpWhite" style:family="drawing-page"><style:drawing-page-properties '
         'draw:background-size="full" draw:fill="solid" draw:fill-color="#FFFFFF"/></style:style>'
-        '<style:style style:name="dpDark" style:family="drawing-page"><style:drawing-page-properties '
-        f'draw:background-size="full" draw:fill="solid" draw:fill-color="{BLACK}"/></style:style>'
         '<style:style style:name="grImage" style:family="graphic"><style:graphic-properties '
         'draw:stroke="none" draw:fill="none" style:protect="position size"/></style:style>'
         '<style:style style:name="grText" style:family="graphic"><style:graphic-properties '
@@ -195,16 +192,15 @@ def build_fodp(slides):
         + "</style:master-page>"
     )
 
-    # Section divider: dark background, reversed logo (Option A), green tagline
+    # Section divider: white background, full-color logo (black lettering), green accent
     m = "PCC-Section"
-    styles.append(presentation_styles(m, (40, "#FFFFFF", True), (20, "#FFFFFF", False), (20, GREEN, False),
-                                       bg=BLACK))
+    styles.append(presentation_styles(m, (40, BLACK, True), (20, BLACK, False), (20, GREEN, False)))
     masters.append(
-        f'<style:master-page style:name="{m}" style:page-layout-name="PM1" draw:style-name="dpDark">'
+        f'<style:master-page style:name="{m}" style:page-layout-name="PM1" draw:style-name="dpWhite">'
         + rect("Accent bar", 2.0, 4.6, 0.4, 3.6, "grAccentGreen")
         + placeholder("title", m, 2.9, 4.4, 22.5, 2.6)
         + placeholder("subtitle", m, 2.9, 7.2, 22.5, 1.4)
-        + image_frame("PCC logo reversed", 17.2, 12.6, 9.4, round(9.4 * 430 / 3097, 3), logo_rev)
+        + image_frame("PCC logo", 17.2, 12.6, 9.4, round(9.4 * 430 / 3098, 3), logo)
         + "</style:master-page>"
     )
 
@@ -228,7 +224,7 @@ def build_fodp(slides):
     pages = []
     for i, s in enumerate(slides, 1):
         m = s["master"]
-        body = [f'<draw:page draw:name="Slide {i}" draw:style-name="dp{"Dark" if m == "PCC-Section" else "White"}" '
+        body = [f'<draw:page draw:name="Slide {i}" draw:style-name="dpWhite" '
                 f'draw:master-page-name="{m}" presentation:presentation-page-layout-name="'
                 f'{"AL1" if s.get("bullets") else "AL2"}">']
         geo = {
