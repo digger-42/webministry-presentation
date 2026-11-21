@@ -55,6 +55,19 @@ def image_frame(name, x, y, w, h, href):
     )
 
 
+def sticker(icon, color):
+    """A brand-color disc with a white Lucide icon (assets/icons, ISC license), as base64 SVG."""
+    src = (ROOT / "assets" / "icons" / f"{icon}.svg").read_text(encoding="utf-8")
+    inner = src[src.index(">", src.index("<svg")) + 1:src.rindex("</svg>")]
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 48 48">'
+        f'<circle cx="24" cy="24" r="24" fill="{color}"/>'
+        '<g transform="translate(12 12)" fill="none" stroke="#FFFFFF" stroke-width="2" '
+        f'stroke-linecap="round" stroke-linejoin="round">{inner}</g></svg>'
+    )
+    return base64.b64encode(svg.encode()).decode()
+
+
 def rect(name, x, y, w, h, style):
     return (
         f'<draw:rect draw:name="{name}" draw:style-name="{style}" draw:layer="backgroundobjects" '
@@ -141,6 +154,16 @@ def presentation_styles(master, title, outline, subtitle, bg="#FFFFFF"):
     return "".join(out)
 
 
+MASTER_COLOR = {"PCC-Content": GREEN, **{f"PCC-Content-{k.replace(' ', '')}": v for k, v in PARTS.items()}}
+
+
+def text_height(text, width_cm):
+    """Rough height of a 20pt body paragraph, including its bottom margin."""
+    per_line = int(width_cm / 0.43)
+    lines = max(1, -(-len(text) // per_line))
+    return lines * 0.85 + 0.45
+
+
 def build_fodp(slides):
     logo = img("pcc-logo-horizontal-color.png")
     tree = img("pcc-tree-watermark.png")
@@ -163,6 +186,12 @@ def build_fodp(slides):
         f'draw:stroke="none" draw:fill="solid" draw:fill-color="{GREY}"/></style:style>'
         f'<style:style style:name="pFooter" style:family="paragraph"><style:text-properties '
         f'fo:font-family="\'{FONT}\'" fo:font-size="10pt" fo:color="{TEXT_GREY}"/></style:style>'
+        '<style:style style:name="pBody" style:family="paragraph"><style:paragraph-properties '
+        'fo:margin-top="0cm" fo:margin-bottom="0.45cm" fo:line-height="120%"/><style:text-properties '
+        f'fo:font-family="\'{FONT}\'" fo:font-size="20pt" fo:color="{BLACK}"/></style:style>'
+        '<style:style style:name="grBody" style:family="graphic"><style:graphic-properties '
+        'draw:stroke="none" draw:fill="none" draw:auto-grow-height="false" fo:padding="0cm" '
+        'draw:textarea-vertical-align="top"/></style:style>'
         '<style:style style:name="pTagline" style:family="paragraph"><style:paragraph-properties '
         f'fo:text-align="start"/><style:text-properties fo:font-family="\'{FONT}\'" fo:font-size="12pt" '
         f'fo:letter-spacing="0.12cm" fo:color="{GREEN}"/></style:style>'
@@ -246,6 +275,24 @@ def build_fodp(slides):
                 f'presentation:user-transformed="true"><draw:text-box><text:p>{escape(s["subtitle"], quote=False)}</text:p>'
                 '</draw:text-box></draw:frame>'
             )
+        if "outline" in geo and s.get("icon"):
+            # Sticker on the right; the text column narrows to make room
+            color = MASTER_COLOR.get(m, GREEN)
+            body.append(image_frame("Sticker", 22.3, 3.9, 4.0, 4.0, sticker(s["icon"], color))
+                        .replace('draw:layer="backgroundobjects"', 'draw:layer="layout"'))
+            x, y, w, h = geo["outline"]
+            geo["outline"] = (x, y, 19.4, h)
+        if s.get("paragraphs"):
+            x, y, w, h = geo["outline"]
+            paras = "".join(f'<text:p text:style-name="pBody">{escape(t, quote=False)}</text:p>'
+                            for t in s["paragraphs"])
+            used = sum(text_height(t, w) for t in s["paragraphs"])
+            body.append(
+                f'<draw:frame draw:name="Body text" draw:style-name="grBody" draw:layer="layout" '
+                f'svg:x="{x}cm" svg:y="{y + 0.3}cm" svg:width="{w}cm" svg:height="{used:.2f}cm">'
+                f'<draw:text-box>{paras}</draw:text-box></draw:frame>'
+            )
+            geo["outline"] = (x, y + used + 0.3, w, h - used - 0.3)
         if "bullets" in s:
             x, y, w, h = geo["outline"]
             items = ""
