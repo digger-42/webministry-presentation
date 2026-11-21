@@ -75,7 +75,7 @@ DECK = [
         "Christine Coggins: Missions",
         "David Schafer: back-up",
         "Steve Wellman: online advertising that drives visitors to the site",
-        "Addie Snauko: team member, role still to be found",
+        "Addie Snauko: rising star, constellation TBD",
     ], "notes": [
         "\"The Dans\": with apologies to The Bobs in Office Space.",
     ]},
