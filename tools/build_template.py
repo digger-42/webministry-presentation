@@ -10,6 +10,7 @@ Brand rules come from PCC Graphic Standards 2020. Run from the repo root:
   python3 tools/build_template.py
 """
 import base64
+import re
 from html import escape
 import subprocess
 import sys
@@ -55,6 +56,19 @@ def image_frame(name, x, y, w, h, href):
     )
 
 
+def sticker(icon, color):
+    """A brand-color disc with a white Lucide icon (assets/icons, ISC license), as base64 SVG."""
+    src = (ROOT / "assets" / "icons" / f"{icon}.svg").read_text(encoding="utf-8")
+    inner = src[src.index(">", src.index("<svg")) + 1:src.rindex("</svg>")]
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 48 48">'
+        f'<circle cx="24" cy="24" r="24" fill="{color}"/>'
+        '<g transform="translate(12 12)" fill="none" stroke="#FFFFFF" stroke-width="2" '
+        f'stroke-linecap="round" stroke-linejoin="round">{inner}</g></svg>'
+    )
+    return base64.b64encode(svg.encode()).decode()
+
+
 def rect(name, x, y, w, h, style):
     return (
         f'<draw:rect draw:name="{name}" draw:style-name="{style}" draw:layer="backgroundobjects" '
@@ -83,14 +97,15 @@ def bullet_levels():
     """Green round bullets, en dashes on the second level."""
     return "".join(
         f'<text:list-level-style-bullet text:level="{lvl}" text:bullet-char="{"●" if lvl % 2 else "–"}">'
-        f'<style:list-level-properties text:space-before="{(lvl - 1) * 1.2:.1f}cm" text:min-label-width="0.8cm"/>'
+        f'<style:list-level-properties text:space-before="{(lvl - 1) * 1.2:.1f}cm" text:min-label-width="1.1cm" '
+        f'text:min-label-distance="0.4cm"/>'
         f'<style:text-properties fo:font-family="OpenSymbol" style:use-window-font-color="false" '
         f'fo:color="{GREEN}" fo:font-size="{60 if lvl == 1 else 80}%"/></text:list-level-style-bullet>'
         for lvl in range(1, 10)
     )
 
 
-def presentation_styles(master, title, outline, subtitle):
+def presentation_styles(master, title, outline, subtitle, bg="#FFFFFF"):
     """Presentation-family styles a master needs. Each arg is (size_pt, color, bold)."""
     def tp(size, color, bold):
         weight = "bold" if bold else "normal"
@@ -110,8 +125,10 @@ def presentation_styles(master, title, outline, subtitle):
         'draw:auto-grow-height="false" fo:padding="0cm"/>'
         '<style:paragraph-properties fo:text-align="start"/>'
         f'{tp(*subtitle)}</style:style>',
+        # Impress reads a master's background fill from this style, not from the
+        # master's drawing-page style, so the color must be set here.
         f'<style:style style:name="{master}-background" style:family="presentation">'
-        '<style:graphic-properties draw:stroke="none" draw:fill="none"/></style:style>',
+        f'<style:graphic-properties draw:stroke="none" draw:fill="solid" draw:fill-color="{bg}"/></style:style>',
         f'<style:style style:name="{master}-backgroundobjects" style:family="presentation">'
         '<style:graphic-properties draw:shadow="hidden"/></style:style>',
         f'<style:style style:name="{master}-notes" style:family="presentation">'
@@ -138,9 +155,29 @@ def presentation_styles(master, title, outline, subtitle):
     return "".join(out)
 
 
+MASTER_COLOR = {"PCC-Content": GREEN, **{f"PCC-Content-{k.replace(' ', '')}": v for k, v in PARTS.items()}}
+
+
+def rich(text):
+    """Escape slide text and make any https:// link clickable, shown without the scheme, www. or query."""
+    def link(m):
+        url = m.group(1)
+        shown = re.sub(r"^https://(www\.)?", "", url).split("?")[0].rstrip("/")
+        return f'<text:a xlink:type="simple" xlink:href="{escape(url)}">{escape(shown, quote=False)}</text:a>'
+    parts = re.split(r"(https://\S+)", text)
+    return "".join(link(re.match(r"(.*)", p)) if p.startswith("https://") else escape(p, quote=False)
+                   for p in parts)
+
+
+def text_height(text, width_cm):
+    """Rough height of a 20pt body paragraph, including its bottom margin."""
+    per_line = int(width_cm / 0.43)
+    lines = max(1, -(-len(text) // per_line))
+    return lines * 0.85 + 0.45
+
+
 def build_fodp(slides):
     logo = img("pcc-logo-horizontal-color.png")
-    logo_rev = img("pcc-logo-horizontal-reversed-a.png")
     tree = img("pcc-tree-watermark.png")
 
     styles, auto, masters = [], [], []
@@ -152,8 +189,6 @@ def build_fodp(slides):
         f'fo:page-height="{H}cm" style:print-orientation="landscape"/></style:page-layout>'
         '<style:style style:name="dpWhite" style:family="drawing-page"><style:drawing-page-properties '
         'draw:background-size="full" draw:fill="solid" draw:fill-color="#FFFFFF"/></style:style>'
-        '<style:style style:name="dpDark" style:family="drawing-page"><style:drawing-page-properties '
-        f'draw:background-size="full" draw:fill="solid" draw:fill-color="{BLACK}"/></style:style>'
         '<style:style style:name="grImage" style:family="graphic"><style:graphic-properties '
         'draw:stroke="none" draw:fill="none" style:protect="position size"/></style:style>'
         '<style:style style:name="grText" style:family="graphic"><style:graphic-properties '
@@ -163,6 +198,12 @@ def build_fodp(slides):
         f'draw:stroke="none" draw:fill="solid" draw:fill-color="{GREY}"/></style:style>'
         f'<style:style style:name="pFooter" style:family="paragraph"><style:text-properties '
         f'fo:font-family="\'{FONT}\'" fo:font-size="10pt" fo:color="{TEXT_GREY}"/></style:style>'
+        '<style:style style:name="pBody" style:family="paragraph"><style:paragraph-properties '
+        'fo:margin-top="0cm" fo:margin-bottom="0.45cm" fo:line-height="120%"/><style:text-properties '
+        f'fo:font-family="\'{FONT}\'" fo:font-size="20pt" fo:color="{BLACK}"/></style:style>'
+        '<style:style style:name="grBody" style:family="graphic"><style:graphic-properties '
+        'draw:stroke="none" draw:fill="none" draw:auto-grow-height="false" fo:padding="0cm" '
+        'draw:textarea-vertical-align="top"/></style:style>'
         '<style:style style:name="pTagline" style:family="paragraph"><style:paragraph-properties '
         f'fo:text-align="start"/><style:text-properties fo:font-family="\'{FONT}\'" fo:font-size="12pt" '
         f'fo:letter-spacing="0.12cm" fo:color="{GREEN}"/></style:style>'
@@ -193,15 +234,15 @@ def build_fodp(slides):
         + "</style:master-page>"
     )
 
-    # Section divider: dark background, reversed logo (Option A), green tagline
+    # Section divider: white background, full-color logo (black lettering), green accent
     m = "PCC-Section"
-    styles.append(presentation_styles(m, (40, "#FFFFFF", True), (20, "#FFFFFF", False), (20, GREEN, False)))
+    styles.append(presentation_styles(m, (40, BLACK, True), (20, BLACK, False), (20, GREEN, False)))
     masters.append(
-        f'<style:master-page style:name="{m}" style:page-layout-name="PM1" draw:style-name="dpDark">'
+        f'<style:master-page style:name="{m}" style:page-layout-name="PM1" draw:style-name="dpWhite">'
         + rect("Accent bar", 2.0, 4.6, 0.4, 3.6, "grAccentGreen")
         + placeholder("title", m, 2.9, 4.4, 22.5, 2.6)
         + placeholder("subtitle", m, 2.9, 7.2, 22.5, 1.4)
-        + image_frame("PCC logo reversed", 17.2, 12.6, 9.4, round(9.4 * 430 / 3097, 3), logo_rev)
+        + image_frame("PCC logo", 17.2, 12.6, 9.4, round(9.4 * 430 / 3098, 3), logo)
         + "</style:master-page>"
     )
 
@@ -225,7 +266,7 @@ def build_fodp(slides):
     pages = []
     for i, s in enumerate(slides, 1):
         m = s["master"]
-        body = [f'<draw:page draw:name="Slide {i}" draw:style-name="dp{"Dark" if m == "PCC-Section" else "White"}" '
+        body = [f'<draw:page draw:name="Slide {i}" draw:style-name="dpWhite" '
                 f'draw:master-page-name="{m}" presentation:presentation-page-layout-name="'
                 f'{"AL1" if s.get("bullets") else "AL2"}">']
         geo = {
@@ -246,16 +287,34 @@ def build_fodp(slides):
                 f'presentation:user-transformed="true"><draw:text-box><text:p>{escape(s["subtitle"], quote=False)}</text:p>'
                 '</draw:text-box></draw:frame>'
             )
+        if "outline" in geo and s.get("icon"):
+            # Sticker on the right; the text column narrows to make room
+            color = MASTER_COLOR.get(m, GREEN)
+            body.append(image_frame("Sticker", 22.3, 3.9, 4.0, 4.0, sticker(s["icon"], color))
+                        .replace('draw:layer="backgroundobjects"', 'draw:layer="layout"'))
+            x, y, w, h = geo["outline"]
+            geo["outline"] = (x, y, 19.4, h)
+        if s.get("paragraphs"):
+            x, y, w, h = geo["outline"]
+            paras = "".join(f'<text:p text:style-name="pBody">{rich(t)}</text:p>'
+                            for t in s["paragraphs"])
+            used = sum(text_height(t, w) for t in s["paragraphs"])
+            body.append(
+                f'<draw:frame draw:name="Body text" draw:style-name="grBody" draw:layer="layout" '
+                f'svg:x="{x}cm" svg:y="{y + 0.3}cm" svg:width="{w}cm" svg:height="{used:.2f}cm">'
+                f'<draw:text-box>{paras}</draw:text-box></draw:frame>'
+            )
+            geo["outline"] = (x, y + used + 0.3, w, h - used - 0.3)
         if "bullets" in s:
             x, y, w, h = geo["outline"]
             items = ""
             for b in s["bullets"]:
                 if isinstance(b, tuple):  # (text, [sub-bullets])
-                    subs = "".join(f"<text:list-item><text:p>{escape(t, quote=False)}</text:p></text:list-item>" for t in b[1])
-                    items += (f"<text:list-item><text:p>{escape(b[0], quote=False)}</text:p>"
+                    subs = "".join(f"<text:list-item><text:p>{rich(t)}</text:p></text:list-item>" for t in b[1])
+                    items += (f"<text:list-item><text:p>{rich(b[0])}</text:p>"
                               f"<text:list>{subs}</text:list></text:list-item>")
                 else:
-                    items += f"<text:list-item><text:p>{escape(b, quote=False)}</text:p></text:list-item>"
+                    items += f"<text:list-item><text:p>{rich(b)}</text:p></text:list-item>"
             body.append(
                 f'<draw:frame presentation:style-name="{m}-outline1" draw:layer="layout" svg:x="{x}cm" '
                 f'svg:y="{y}cm" svg:width="{w}cm" svg:height="{h}cm" presentation:class="outline" '
