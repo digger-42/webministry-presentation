@@ -279,21 +279,45 @@ DECK = [
         "Who would edit week to week, and how much training would they need?",
     ]},
 
-    {"master": WEB, "title": "Let's build one: a youth landing page", "icon": "rocket", "bullets": [
-        "Who we are and why",
-        "A 3-month calendar of programs and events, with registration and \"more info\" links",
-        "One place to send parents for updates and cancellations",
-        "Children's can reuse the same pattern",
+    {"master": WEB, "title": "Let's build one: a new front page", "icon": "rocket", "paragraphs": [
+        "We want to refresh the website's design, and Flex 2 makes that easy.",
+        "Let's build a new main page, live, that serves the purposes we just talked about.",
     ], "notes": [
-        "Requested by Josh; Wade wants the same for Children's.",
+        "Build it hidden from the menu so nothing changes for visitors today.",
     ]},
 
-    {"master": WEB, "title": "Brainstorm, plan, prototype, revise, publish", "icon": "lightbulb", "bullets": [
-        "Brainstorm: who it's for and the three questions it must answer",
-        "Plan: sections, blocks, where it sits in the menu, images needed",
-        "Prototype: build it live, hidden from the menu",
-        "Revise: check it on the screen and on a phone",
-        "Publish: turn it on in the menu",
+    {"master": WEB, "title": "Step 1: choose a look", "icon": "palette", "bullets": [
+        "Browse the designs on the main site",
+        "Set up fonts and colors, or change them on our current design",
+        "Notice how little it takes",
+    ], "notes": [
+        "Live: open the Flex 2 design gallery, pick one, then adjust fonts and brand colors.",
+    ]},
+
+    {"master": WEB, "title": "Step 2: just what we said it needs", "icon": "blocks", "bullets": [
+        "What a visitor should see in the first five seconds",
+        "The three things the front page must hold",
+        "Clear paths for newcomers and for members",
+    ], "notes": [
+        "Use the answers from the front-page and audience questions we just discussed.",
+    ]},
+
+    {"master": WEB, "title": "Step 3: compare", "icon": "scale", "paragraphs": [
+        "Put the new page beside today's front page.",
+        "Do we like it?",
+    ]},
+
+    {"master": WEB, "title": "What do we hang on the framework?", "icon": "image", "bullets": [
+        "What content does it need?",
+        "What assets do we need to go get: photos, videos, documents?",
+        "What makes it the best site it can be for PCC and those we serve?",
+    ]},
+
+    {"master": WEB, "title": "Stand back", "icon": "lightbulb", "paragraphs": [
+        "How hard was that?",
+        "Is the new page better?",
+        "We'll keep working on it in our regular meetings, to be sure it's right before we go live, "
+        "if that's what we decide we want.",
     ]},
 
     {"master": "PCC-Section", "title": "Thank you"},
