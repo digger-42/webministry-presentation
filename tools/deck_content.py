@@ -288,13 +288,30 @@ DECK = [
         "Stock graphics: in Flex's image selector pop-up",
     ]},
 
-    {"master": WEB, "title": "Resources: PCC", "bullets": [
+    {"master": WEB, "title": "Resources: PCC website and media", "bullets": [
         "Our site: https://pccmi.org/",
         "Web admin: https://www.pccmi.org/admin/",
         "Live edit (Flex 2): https://www.pccmi.org/edit",
-        "Breeze dashboard: https://pccmi.breezechms.com/r/dashboard",
-        "Planning Center Services: https://login.planningcenteronline.com/login/new?return=Services%2Fdashboard%2F0",
+        "Watch Live: https://www.pccmi.org/WatchLive",
+        "YouTube: https://www.pccmi.org/YouTube",
+        "Facebook: https://www.pccmi.org/FaceBook",
         "Linktree (TapDot): https://linktr.ee/pccmi",
+    ]},
+
+    {"master": WEB, "title": "Resources: PCC tools", "bullets": [
+        "Breeze dashboard: https://pccmi.breezechms.com/r/dashboard",
+        "Breeze admin: https://www.pccmi.org/i/breezechms",
+        "Planning Center Services: https://login.planningcenteronline.com/login/new?return=Services%2Fdashboard%2F0",
+        ("Google Workspace admin portal: https://www.pccmi.org/i/google-admin", [
+            "Needs an admin login: ask Dan Rittersdorf to help you",
+        ]),
+    ]},
+
+    {"master": WEB, "title": "Brand guidelines and logos", "icon": "palette", "paragraphs": [
+        "The brand guidelines and logo source files are on Google Drive. For access, ask Ken, "
+        "Katie or Dan Rittersdorf; any of them can share it with you.",
+        "Please don't copy a low-resolution JPG of the logo, and never enlarge one. Ask for the "
+        "source files so the logo always looks crisp and clean.",
     ]},
 
     {"master": WEB, "title": "Let's build one: a new front page", "icon": "rocket", "paragraphs": [
