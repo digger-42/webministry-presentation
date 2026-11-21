@@ -152,9 +152,23 @@ DECK = [
         "The Financial Secretary counts the offering weekly and reports giving; that role is separate from Gary's Treasurer role.",
     ]},
 
-    {"master": BURGUNDY, "title": "Planning Center", "icon": "calendar-days", "paragraphs": [
-        "Katie uses Planning Center for worship, and Wade uses it for children's ministry.",
-        "Katie and Wade: how do you use it?",
+    {"master": BURGUNDY, "title": "Planning Center: how we use it", "bullets": [
+        ("Katie, Worship: Planning Center Services", [
+            "Manages the Worship Team and schedules team members each week",
+            "Shares music and sound samples with the band and vocalists",
+        ]),
+        ("Wade, Children's: Services, Check-Ins and Registrations", [
+            "Services: volunteers, scheduling and reminders",
+            "Check-Ins: runs the check-in stations and matches children back up with parents",
+            "Registrations: VBS sign-ups each year",
+        ]),
+    ]},
+
+    {"master": BURGUNDY, "title": "Planning Center: the bigger picture", "icon": "calendar-days", "paragraphs": [
+        "Planning Center offers many more modules, and some overlap with what Faith Connector "
+        "and Breeze already do for us.",
+        "Adding more of them is possible, but the cost is a real challenge compared to the "
+        "services we use now.",
     ]},
 
     {"master": GREEN, "title": "Break", "icon": "coffee", "paragraphs": [
