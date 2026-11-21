@@ -105,7 +105,7 @@ DECK = [
 
     {"master": TEAL, "title": "Live-stream video", "icon": "video", "bullets": [
         "3 PTZ cameras above the sound booth",
-        "They feed the \"PCC Video Beast\", a gaming PC in the video production room (northeast corner of the sanctuary)",
+        "They feed the \"PCC Video Beast\", a graphics powerhouse of a PC (much like a gaming computer) in the video production room (northeast corner of the sanctuary)",
         "vMix mixes in the sound board feed",
         "Streams to Facebook, YouTube and the Watch Live page on pccmi.org",
         "Who: Dan Rittersdorf built and maintains it; Katie Winstanley holds the budget",
