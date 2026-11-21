@@ -159,9 +159,14 @@ MASTER_COLOR = {"PCC-Content": GREEN, **{f"PCC-Content-{k.replace(' ', '')}": v 
 
 
 def rich(text):
-    """Escape slide text and make any https:// link clickable."""
-    out = escape(text, quote=False)
-    return re.sub(r'(https://[^\s<]+)', r'<text:a xlink:type="simple" xlink:href="\1">\1</text:a>', out)
+    """Escape slide text and make any https:// link clickable, shown without the scheme, www. or query."""
+    def link(m):
+        url = m.group(1)
+        shown = re.sub(r"^https://(www\.)?", "", url).split("?")[0].rstrip("/")
+        return f'<text:a xlink:type="simple" xlink:href="{escape(url)}">{escape(shown, quote=False)}</text:a>'
+    parts = re.split(r"(https://\S+)", text)
+    return "".join(link(re.match(r"(.*)", p)) if p.startswith("https://") else escape(p, quote=False)
+                   for p in parts)
 
 
 def text_height(text, width_cm):

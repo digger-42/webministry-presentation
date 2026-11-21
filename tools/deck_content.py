@@ -279,14 +279,22 @@ DECK = [
         "Who would edit week to week, and how much training would they need?",
     ]},
 
-    {"master": WEB, "title": "Resources", "bullets": [
-        ("YouTube: lots of Flex 2 training videos and examples", [
-            "https://www.youtube.com/@faithconnector",
-        ]),
-        ("Design catalog", ["https://www.faithconnector.com/our-church-website-designs"]),
-        ("Real church websites built on Faith Connector", ["https://www.faithconnector.com/best-church-websites"]),
-        ("Feature list", ["https://www.faithconnector.com/church-websites-features"]),
+    {"master": WEB, "title": "Resources: Faith Connector", "bullets": [
+        "Home: https://www.faithconnector.com/",
+        "YouTube, Flex 2 training and examples: https://www.youtube.com/@faithconnector",
+        "Designs: https://www.faithconnector.com/our-church-website-designs",
+        "Real sites: https://www.faithconnector.com/best-church-websites",
+        "Features: https://www.faithconnector.com/church-websites-features",
         "Stock graphics: in Flex's image selector pop-up",
+    ]},
+
+    {"master": WEB, "title": "Resources: PCC", "bullets": [
+        "Our site: https://pccmi.org/",
+        "Web admin: https://www.pccmi.org/admin/",
+        "Live edit (Flex 2): https://www.pccmi.org/edit",
+        "Breeze dashboard: https://pccmi.breezechms.com/r/dashboard",
+        "Planning Center Services: https://login.planningcenteronline.com/login/new?return=Services%2Fdashboard%2F0",
+        "Linktree (TapDot): https://linktr.ee/pccmi",
     ]},
 
     {"master": WEB, "title": "Let's build one: a new front page", "icon": "rocket", "paragraphs": [
